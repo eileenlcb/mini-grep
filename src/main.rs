@@ -15,7 +15,7 @@ fn main() {
 }
 
 struct Config {
-    //test
+    //tests
     query: String,
     file_path: String,
 }
