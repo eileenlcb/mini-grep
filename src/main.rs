@@ -1,7 +1,7 @@
 use std::env;
-use std::error::Error;
-use std::fs;
 use std::process;
+
+use minigrep::Config;
 
 fn main() {
     //args不接受非unicode，如果需要，需要使用args_os
@@ -14,38 +14,10 @@ fn main() {
     println!("Searching for {}", config.query);
     println!("In file {}", config.file_path);
 
-    run(config);
-}
+    if let Err(e) = minigrep::run(config){
+        println!("Application err:{e}");
+        process::exit(1);
+    };
 
-fn run(config:Config) -> Result<(),Box<dyn Error>>{
-    let content = fs::read_to_string(config.file_path)?;
-    println!("{}", content);
-    Ok(())
+    
 }
-
-struct Config {
-    //tests
-    query: String,
-    file_path: String,
-}
-
-impl Config {
-    //代码中的字符串字面量都是该类型，且拥有 'static 生命周期
-    fn build(args: &[String]) -> Result<Config,&'static str> {
-        if args.len()<3{
-            return Err("no enough arguments");
-        }
-        let query = &args[1].clone();
-        let file_path = &args[2].clone();
-        Ok(Config {
-            query: query.to_string(),
-            file_path: file_path.to_string(),
-        })
-    }
-}
-
-// fn parse_config(args:&Vec<String>) -> Config{
-//     let query = &args[1].clone();
-//     let file_path = &args[2].clone();
-//     Config { query: query.to_string(), file_path: file_path.to_string() }
-// }
